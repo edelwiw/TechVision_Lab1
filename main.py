@@ -239,12 +239,12 @@ def LUT_transformation(img, LUT):
 
 
 def show_image_profile(img, level):
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) # normal colors to display
     plt.figure(figsize=(13, 5))
     plt.subplot(1, 2, 1)
     plt.title('Image')
-    plt.imshow(img)
-    # disable the axis
-    plt.axis('off')
+    plt.imshow(img_rgb)
+    plt.axis('off') # disable the axis
 
     plt.subplot(1, 2, 2)
     profile = img[level, :]
@@ -253,6 +253,38 @@ def show_image_profile(img, level):
 
     plt.subplots_adjust(wspace=0.3, hspace=0.3)
     plt.subplots_adjust(left=0.05, right=0.95)
+
+def show_image_projection(img):
+    b, g, r = cv2.split(img)
+    # calculate 0x projection
+    projection_x = (np.sum(b, axis=0) + np.sum(g, axis=0) + np.sum(r, axis=0)) / img.shape[0] / 3
+
+    # calculate 0y projection
+    projection_y = (np.sum(b, axis=1) + np.sum(g, axis=1) + np.sum(r, axis=1)) / img.shape[1] / 3
+
+    plt.figure(figsize=(8, 8))
+    plt.subplot(2, 2, 1)
+    plt.grid(True)
+    plt.title('Image')
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+
+    plt.subplot(2, 2, 3)
+    plt.ylim([255, 0])
+    plt.xlim([0, img.shape[1]])
+    plt.grid(True)
+    plt.plot(range(img.shape[1]), projection_x, color='g')
+    plt.title('Projection X')
+
+    plt.subplot(2, 2, 2)
+    plt.xlim([0, 255])
+    plt.ylim([img.shape[1], 0])
+    plt.grid(True)
+    plt.plot(projection_y, range(img.shape[0]), color='g')
+    plt.title('Projection Y')
+
+    plt.subplots_adjust(wspace=0.3, hspace=0.3)
+    plt.subplots_adjust(left=0.05, right=0.95)
+
 
 # open the image
 img = cv2.imread("img.jpeg")
@@ -311,8 +343,14 @@ show_image_profile(img, img.shape[0] // 2)
 ### image projection
 
 # open the image
-img = cv2.imread("fill.png")
+img = cv2.imread("fill.jpg")
 assert img is not None, "File could not be read"
 
+show_image_projection(img)
+
+img = cv2.imread("fill2.jpg")
+assert img is not None, "File could not be read"
+
+show_image_projection(img)
 
 plt.show()
