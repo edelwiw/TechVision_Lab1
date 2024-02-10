@@ -240,9 +240,13 @@ def LUT_transformation(img, LUT):
 
 def show_image_profile(img, level):
     plt.figure(figsize=(13, 5))
-    plt.title('Image profile')
+    plt.subplot(1, 2, 1)
+    plt.title('Image')
+
+    plt.subplot(1, 2, 2)
     profile = img[level, :]
     plt.plot(profile)
+    plt.title('Profile')
 
 
 # open the image
@@ -299,6 +303,11 @@ img = cv2.imread("barcode.jpg")
 assert img is not None, "File could not be read"
 show_image_profile(img, img.shape[0] // 2)
 
+### image projection
+
+# open the image
+img = cv2.imread("barcode.jpg")
+assert img is not None, "File could not be read"
 
 
 plt.show()
