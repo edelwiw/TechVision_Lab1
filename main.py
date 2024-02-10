@@ -238,6 +238,13 @@ def LUT_transformation(img, LUT):
     return cv2.LUT(img, LUT).astype(np.uint8)
 
 
+def show_image_profile(img, level):
+    plt.figure(figsize=(13, 5))
+    plt.title('Image profile')
+    profile = img[level, :]
+    plt.plot(profile)
+
+
 # open the image
 img = cv2.imread("img.jpeg")
 assert img is not None, "File could not be read"
@@ -278,12 +285,20 @@ hyperbolic_transformed_img = hyperbolic_transformation(img, 0.1)
 show_image_with_hist(hyperbolic_transformed_img, 'Hyperbolic transformation')
 
 # LUT transformation
-
 # generate LUT 
 lut = np.arange(256, dtype = np.uint8)
 lut = np.clip(np.power(lut, 0.9) + 20, 0, 255)
 
 LUT_transformed_img = LUT_transformation(img, lut)
 show_image_with_hist(LUT_transformed_img, 'LUT transformation')
+
+### image profile
+
+# open the image
+img = cv2.imread("barcode.jpg")
+assert img is not None, "File could not be read"
+show_image_profile(img, img.shape[0] // 2)
+
+
 
 plt.show()
