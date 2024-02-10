@@ -21,17 +21,27 @@ def calc_hist_normalised(img):
 def show_image_with_hist(img, title="Image"):
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) # normal colors to display
     b_hist, g_hist, r_hist = calc_hist_normalised(img) # calculate the histograms
+    cumulative_hist_b,cumulative_hist_g, cumulative_hist_r = np.cumsum(b_hist), np.cumsum(g_hist), np.cumsum(r_hist) # calculate the cumulative histograms
     
     gs = plt.GridSpec(2, 4, width_ratios=[3, 1, 1, 1])
 
     plt.figure(figsize=(13, 5))
+
     plt.suptitle(title, fontsize=16)
     ax0 = plt.subplot(gs[:, 0]) # for image 
+    ax0.set_title('Image')
     ax1 = plt.subplot(gs[0, 1:4]) # for rgb hist
+    ax1.set_title('RGB Histogram')
 
-    ax2 = plt.subplot(gs[1, 1])
-    ax3 = plt.subplot(gs[1, 2])
-    ax4 = plt.subplot(gs[1, 3])
+    ax2 = plt.subplot(gs[1, 1:3])
+    ax2.set_title('Cumulative RGB Histogram')
+    ax3 = plt.subplot(gs[1, 3])
+    ax3.set_title('Average Histogram')
+
+    # set the x axis limits for the histogram subplots and grid
+    for ax in [ax1, ax2, ax3]:
+        ax.set_xlim([0, 256])
+        ax.grid(True)
 
     # display the image
     ax0.imshow(img_rgb)
@@ -42,18 +52,46 @@ def show_image_with_hist(img, title="Image"):
     ax1.plot(g_hist, color='g')
     ax1.plot(r_hist, color='r')
 
-    # histogram for each color
-    ax2.plot(b_hist, color='b')
-    ax3.plot(g_hist, color='g')
-    ax4.plot(r_hist, color='r')
+    # cumulative histograms
+    ax2.plot(cumulative_hist_b, color='b')
+    ax2.plot(cumulative_hist_g, color='g')
+    ax2.plot(cumulative_hist_r, color='r')
 
-    # set the x axis limits for the histogram subplots and grid
-    for ax in [ax1, ax2, ax3, ax4]:
-        ax.set_xlim([0, 256])
-        ax.grid(True)
+    # add 3 colors hist
+    avg_hits = (b_hist + g_hist + r_hist) / 3
+    ax3.hist(np.arange(0, 256), bins=256, weights=avg_hits, color='black')
+    
+
+
+    # histogram for each color
+    # ax2.plot(b_hist, color='b')
+    # ax3.plot(g_hist, color='g')
+    # ax4.plot(r_hist, color='r')
+
 
     plt.subplots_adjust(wspace=0.3, hspace=0.3)
     plt.subplots_adjust(left=0.05, right=0.95)
+
+
+def linear_leveling_transformation(img):
+    # split the image into its 3 channels
+    b, g, r = cv2.split(img)
+
+    # calculate the histograms
+    hist = calc_hist_normalised(img)
+
+    # calculate the cumulative histograms
+    cumulative_histogram_b = np.cumsum(hist[0]) 
+    cumulative_histogram_g = np.cumsum(hist[1])
+    cumulative_histogram_r = np.cumsum(hist[2])
+
+    # apply the transformation
+    b = np.clip(255 * cumulative_histogram_b[b], 0, 255)
+    g = np.clip(255 * cumulative_histogram_g[g], 0, 255)
+    r = np.clip(255 * cumulative_histogram_r[r], 0, 255)
+
+    # merge the channels back
+    return cv2.merge([b, g, r]).astype(np.uint8)
 
 
 def aritmetic_transformation(img, b_delta, g_delta, r_delta):
@@ -196,6 +234,9 @@ def hyperbolic_transformation(img, alpha):
     return cv2.merge([b, g, r]).astype(np.uint8)
 
 
+def LUT_transformation(img, LUT):
+    return cv2.LUT(img, LUT).astype(np.uint8)
+
 
 # open the image
 img = cv2.imread("img.jpeg")
@@ -203,6 +244,10 @@ assert img is not None, "File could not be read"
 
 # show the image and its histogram
 show_image_with_hist(img, 'Source image')
+
+#linear leveling transformation
+linear_leveling_transformed_img = linear_leveling_transformation(img)
+show_image_with_hist(linear_leveling_transformed_img, 'Linear leveling transformation')
 
 # aritmetic transformation
 aritmetic_transformaed_img = aritmetic_transformation(img, 10, 20, 30)
@@ -217,7 +262,7 @@ uniform_transformed_img = uniform_transformation(img)
 show_image_with_hist(uniform_transformed_img, 'Uniform transformation')
 
 # exponentional transformation
-exponentional_transformed_img = exponentional_transformation(img, 2)
+exponentional_transformed_img = exponentional_transformation(img, 4)
 show_image_with_hist(exponentional_transformed_img, 'Exponentional transformation')
 
 # rayleigh law transformation
@@ -229,10 +274,16 @@ two_thirds_rule_transformed_img = two_thirds_rule_transformation(img)
 show_image_with_hist(two_thirds_rule_transformed_img, 'Two thirds rule transformation')
 
 # hyperbolic transformation
-hyperbolic_transformed_img = hyperbolic_transformation(img, 0.04)
+hyperbolic_transformed_img = hyperbolic_transformation(img, 0.1)
 show_image_with_hist(hyperbolic_transformed_img, 'Hyperbolic transformation')
 
+# LUT transformation
 
+# generate LUT 
+lut = np.arange(256, dtype = np.uint8)
+lut = np.clip(np.power(lut, 0.9) + 20, 0, 255)
 
+LUT_transformed_img = LUT_transformation(img, lut)
+show_image_with_hist(LUT_transformed_img, 'LUT transformation')
 
 plt.show()
