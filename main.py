@@ -242,12 +242,17 @@ def show_image_profile(img, level):
     plt.figure(figsize=(13, 5))
     plt.subplot(1, 2, 1)
     plt.title('Image')
+    plt.imshow(img)
+    # disable the axis
+    plt.axis('off')
 
     plt.subplot(1, 2, 2)
     profile = img[level, :]
     plt.plot(profile)
     plt.title('Profile')
 
+    plt.subplots_adjust(wspace=0.3, hspace=0.3)
+    plt.subplots_adjust(left=0.05, right=0.95)
 
 # open the image
 img = cv2.imread("img.jpeg")
@@ -306,7 +311,7 @@ show_image_profile(img, img.shape[0] // 2)
 ### image projection
 
 # open the image
-img = cv2.imread("barcode.jpg")
+img = cv2.imread("fill.png")
 assert img is not None, "File could not be read"
 
 
