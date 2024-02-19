@@ -254,6 +254,7 @@ def show_image_profile(img, level):
     plt.subplots_adjust(wspace=0.3, hspace=0.3)
     plt.subplots_adjust(left=0.05, right=0.95)
 
+
 def show_image_projection(img):
     b, g, r = cv2.split(img)
     # calculate 0x projection
