@@ -60,17 +60,12 @@ def show_image_with_hist(img, title="Image"):
     # add 3 colors hist
     avg_hits = (b_hist + g_hist + r_hist) / 3
     ax3.hist(np.arange(0, 256), bins=256, weights=avg_hits, color='black')
-    
-
-
-    # histogram for each color
-    # ax2.plot(b_hist, color='b')
-    # ax3.plot(g_hist, color='g')
-    # ax4.plot(r_hist, color='r')
-
 
     plt.subplots_adjust(wspace=0.3, hspace=0.3)
     plt.subplots_adjust(left=0.05, right=0.95)
+
+    # save image
+    plt.savefig(f"results/{title}.png")
 
 
 def linear_leveling_transformation(img):
