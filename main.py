@@ -119,13 +119,12 @@ def dynamic_range_expansion_transformation(img, aplha):
     g = np.clip(((g - g_min) / (g_max - g_min)) ** aplha, 0, 1)
     r = np.clip(((r - r_min) / (r_max - r_min)) ** aplha, 0, 1)
 
-    img_transformed = cv2.merge([b, g, r])
+    img_transformed = cv2.merge([b, g, r])  # merge the channels back
     
     # convert the image back to uint8 if it was initially of that type
     if img.dtype == 'uint8':
         img_transformed = (255 * img_transformed).clip(0, 255).astype(np.uint8)
 
-    # merge the channels back
     return img_transformed
 
 
@@ -233,7 +232,7 @@ def LUT_transformation(img, LUT):
     return cv2.LUT(img, LUT).astype(np.uint8)
 
 
-def show_image_profile(img, level):
+def show_image_profile(img, level, title="Profile"):
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) # normal colors to display
     plt.figure(figsize=(13, 5))
     plt.subplot(1, 2, 1)
@@ -249,8 +248,11 @@ def show_image_profile(img, level):
     plt.subplots_adjust(wspace=0.3, hspace=0.3)
     plt.subplots_adjust(left=0.05, right=0.95)
 
+    # save image
+    plt.savefig(f"results/{title}.png")
 
-def show_image_projection(img):
+
+def show_image_projection(img, title="Projection"):
     b, g, r = cv2.split(img)
     # calculate 0x projection
     projection_x = (np.sum(b, axis=0) + np.sum(g, axis=0) + np.sum(r, axis=0)) / img.shape[0] / 3
@@ -280,6 +282,9 @@ def show_image_projection(img):
 
     plt.subplots_adjust(wspace=0.3, hspace=0.3)
     plt.subplots_adjust(left=0.05, right=0.95)
+
+    # save image
+    plt.savefig(f"results/{title}.png")
 
 
 # open the image
@@ -342,11 +347,11 @@ show_image_profile(img, img.shape[0] // 2)
 img = cv2.imread("fill.jpg")
 assert img is not None, "File could not be read"
 
-show_image_projection(img)
+show_image_projection(img, "Projection 1")
 
 img = cv2.imread("fill2.jpg")
 assert img is not None, "File could not be read"
 
-show_image_projection(img)
+show_image_projection(img, "Projection 2")
 
 plt.show()
