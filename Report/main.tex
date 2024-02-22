@@ -65,6 +65,12 @@
 }
 \makeatother
 
+% Redefinition of section and subsection numbering style
+\def\thesection{\arabic{section}.}
+\def\thesubsection{\arabic{section}.\arabic{subsection}.}
+\def\thesubsubsection{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}.}
+
+
 % commands for unnumbered sections
 \newcommand{\usection}[1]{\section*{#1} \addcontentsline{toc}{section}{\protect\numberline{}#1}}
 \newcommand{\usubsection}[1]{\subsection*{#1} \addcontentsline{toc}{subsection}{\protect\numberline{}#1}}
@@ -714,7 +720,26 @@ show_image_projection(img2, "Projection 2")
 \newpage\clearpage
 \section{Вывод}
 
-
 Exercitation non cupidatat exercitation velit nostrud dolor. Ipsum dolor elit ex et minim enim. Occaecat occaecat eu eu cillum pariatur velit non anim culpa. Esse officia magna duis aliqua dolore. In anim commodo consectetur ullamco fugiat Lorem magna nisi.
+
+\section{Ответы на вопросы}
+
+\newcounter{question}
+\setcounter{question}{0}
+
+\newcommand{\question}[1]{\item[Q\refstepcounter{question}\thequestion.] #1}
+\newcommand{\answer}[1]{\item[A\thequestion.] #1}
+
+\begin{itemize}
+  \question{Что такое контрастность изозбражения и как ее можно изверить?}
+  \answer{Контранстность -- разность между цветом самого темного и самого светлого пикселя на изображении}
+
+  \question{Чем эффективно использование профилей и проекций изображения?}
+  \answer{С помощью профилей и проекций можно определить расположение объектов на изображении, а так же их размеры}
+
+  \question{Каким образом можной найти объект на равномерном фоне?}
+  \answer{Можно построить проекцию изображения на оси и найти пики на графиках проекций. Это будет середине объектов на изображении.}
+\end{itemize}
+
 
 \end{document}
