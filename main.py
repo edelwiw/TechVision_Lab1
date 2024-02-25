@@ -2,7 +2,7 @@ import cv2 as cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-def calc_hist_normalised(img):
+def calc_hist_normalized(img):
     histSize = 256
     histRange = (0, 256)
     # calculate the histograms
@@ -15,7 +15,7 @@ def calc_hist_normalised(img):
 # add histogram and image to the same plot
 def show_image_with_hist(img, title="Image"):
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) # normal colors to display
-    b_hist, g_hist, r_hist = calc_hist_normalised(img) # calculate the histograms
+    b_hist, g_hist, r_hist = calc_hist_normalized(img) # calculate the histograms
     cumulative_hist_b,cumulative_hist_g, cumulative_hist_r = np.cumsum(b_hist), np.cumsum(g_hist), np.cumsum(r_hist) # calculate the cumulative histograms
     
     gs = plt.GridSpec(2, 4, width_ratios=[3, 1, 1, 1])
@@ -68,7 +68,7 @@ def linear_leveling_transformation(img):
     b, g, r = cv2.split(img)
 
     # calculate the histograms
-    hist = calc_hist_normalised(img)
+    hist = calc_hist_normalized(img)
 
     # calculate the cumulative histograms
     cumulative_histogram_b = np.cumsum(hist[0]) 
@@ -84,7 +84,7 @@ def linear_leveling_transformation(img):
     return cv2.merge([b, g, r]).astype(np.uint8)
 
 
-def aritmetic_transformation(img, b_delta, g_delta, r_delta):
+def arithmetic_transformation(img, b_delta, g_delta, r_delta):
     # split the image into its 3 channels
     b, g, r = cv2.split(img)
 
@@ -97,7 +97,7 @@ def aritmetic_transformation(img, b_delta, g_delta, r_delta):
     return cv2.merge([b, g, r])
 
 
-def dynamic_range_expansion_transformation(img, aplha):
+def dynamic_range_expansion_transformation(img, alpha):
     # find maximum and minimum values for each channel
 
     # if the image is of type uint8, convert it to float64
@@ -110,9 +110,9 @@ def dynamic_range_expansion_transformation(img, aplha):
     r_min, r_max = r.min(), r.max()
 
     # apply the transformation
-    b = np.clip(((b - b_min) / (b_max - b_min)) ** aplha, 0, 1)
-    g = np.clip(((g - g_min) / (g_max - g_min)) ** aplha, 0, 1)
-    r = np.clip(((r - r_min) / (r_max - r_min)) ** aplha, 0, 1)
+    b = np.clip(((b - b_min) / (b_max - b_min)) ** alpha, 0, 1)
+    g = np.clip(((g - g_min) / (g_max - g_min)) ** alpha, 0, 1)
+    r = np.clip(((r - r_min) / (r_max - r_min)) ** alpha, 0, 1)
 
     img_transformed = cv2.merge([b, g, r])  # merge the channels back
     
@@ -126,7 +126,7 @@ def dynamic_range_expansion_transformation(img, aplha):
 def uniform_transformation(img):
     b, g, r = cv2.split(img)
     # calculate the histograms
-    hist = calc_hist_normalised(img)
+    hist = calc_hist_normalized(img)
 
     b_min, b_max = b.min(), b.max()
     g_min, g_max = g.min(), g.max()
@@ -143,10 +143,10 @@ def uniform_transformation(img):
     return cv2.merge([b, g, r]).astype(np.uint8)
 
 
-def exponentional_transformation(img, alpha):
+def exponential_transformation(img, alpha):
     b, g, r = cv2.split(img)
     # calculate the histograms
-    hist = calc_hist_normalised(img)
+    hist = calc_hist_normalized(img)
 
     b_min, b_max = b.min(), b.max()
     g_min, g_max = g.min(), g.max()
@@ -166,7 +166,7 @@ def exponentional_transformation(img, alpha):
 def rayleigh_law_transformation(img, alpha):
     b, g, r = cv2.split(img)
     # calculate the histograms
-    hist = calc_hist_normalised(img)
+    hist = calc_hist_normalized(img)
 
     b_min, b_max = b.min(), b.max()
     g_min, g_max = g.min(), g.max()
@@ -186,7 +186,7 @@ def rayleigh_law_transformation(img, alpha):
 def two_thirds_rule_transformation(img):
     b, g, r = cv2.split(img)
     # calculate the histograms
-    hist = calc_hist_normalised(img)
+    hist = calc_hist_normalized(img)
 
     b_min, b_max = b.min(), b.max()
     g_min, g_max = g.min(), g.max()
@@ -206,7 +206,7 @@ def two_thirds_rule_transformation(img):
 def hyperbolic_transformation(img, alpha):
     b, g, r = cv2.split(img)
     # calculate the histograms
-    hist = calc_hist_normalised(img)
+    hist = calc_hist_normalized(img)
 
     b_min, b_max = b.min(), b.max()
     g_min, g_max = g.min(), g.max()
@@ -293,9 +293,9 @@ show_image_with_hist(img, 'Source image')
 linear_leveling_transformed_img = linear_leveling_transformation(img)
 show_image_with_hist(linear_leveling_transformed_img, 'Linear leveling transformation')
 
-# aritmetic transformation
-aritmetic_transformaed_img = aritmetic_transformation(img, 10, 20, 30)
-show_image_with_hist(aritmetic_transformaed_img, 'Aritmetic transformation')
+# arithmetics transformation
+arithmetic_transformed_img = arithmetic_transformation(img, 10, 20, 30)
+show_image_with_hist(arithmetic_transformed_img, 'Arithmetics transformation')
 
 # dynamic range expansion
 dynamic_range_expansion_img = dynamic_range_expansion_transformation(img, 0.8)
@@ -305,9 +305,9 @@ show_image_with_hist(dynamic_range_expansion_img, 'Dynamic range expansion')
 uniform_transformed_img = uniform_transformation(img)
 show_image_with_hist(uniform_transformed_img, 'Uniform transformation')
 
-# exponentional transformation
-exponentional_transformed_img = exponentional_transformation(img, 4)
-show_image_with_hist(exponentional_transformed_img, 'Exponentional transformation')
+# expositional transformation
+expositional_transformed_img = exponential_transformation(img, 4)
+show_image_with_hist(expositional_transformed_img, 'Expositional transformation')
 
 # rayleigh law transformation
 rayleigh_law_transformed_img = rayleigh_law_transformation(img, 0.5)
