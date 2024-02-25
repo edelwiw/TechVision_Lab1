@@ -10,11 +10,6 @@ def calc_hist_normalised(img):
     g_hist = cv2.calcHist([img], [1], None, [histSize], histRange) / (img.shape[0] * img.shape[1])
     r_hist = cv2.calcHist([img], [2], None, [histSize], histRange) / (img.shape[0] * img.shape[1])
 
-    # normalize the histograms
-    # cv2.normalize(b_hist, b_hist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
-    # cv2.normalize(g_hist, g_hist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
-    # cv2.normalize(r_hist, r_hist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
-
     return b_hist, g_hist, r_hist
 
 # add histogram and image to the same plot
