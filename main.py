@@ -89,9 +89,9 @@ def aritmetic_transformation(img, b_delta, g_delta, r_delta):
     b, g, r = cv2.split(img)
 
     # add the delta to each channel and divide by 255
-    b = (b + b_delta) 
-    g = (g + g_delta) 
-    r = (r + r_delta) 
+    b = np.clip((b + b_delta), 0, 255) 
+    g = np.clip((g + g_delta), 0, 255) 
+    r = np.clip((r + r_delta), 0, 255) 
 
     # merge the channels back
     return cv2.merge([b, g, r])
